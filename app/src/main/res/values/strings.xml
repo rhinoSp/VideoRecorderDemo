@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VideoReccordDemo</string>
+    <string name="app_name">VideoRecorderDemo</string>
     <string name="record">Record</string>
     <string name="stop">Stop</string>
     <string name="description_info">Info</string>
