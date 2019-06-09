@@ -1,29 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000">
 
-    <com.rhino.videorecorderdemo.view.DragLinearLayout
+    <com.rhino.videorecorderdemo.view.AutoFitTextureView
+        android:id="@+id/texture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
-        <com.rhino.videorecorderdemo.view.AutoFitTextureView
-            android:id="@+id/texture"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
-
-    </com.rhino.videorecorderdemo.view.DragLinearLayout>
-
-    <Button
-        android:id="@+id/video"
+    <RelativeLayout
+        android:id="@+id/rl_top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
+        android:background="#33000000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_record_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:layout_margin="10dp"
-        android:text="@string/record" />
+        android:background="#33000000">
 
+        <ImageView
+            android:id="@+id/bt_switch_camera"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            android:src="@mipmap/ic_switch_camera"
+            android:tint="#ffffff" />
+
+        <Button
+            android:id="@+id/bt_start_record"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/selector_oval_nor_sol_00000000_str2_ffffff_pre_sol_88ffffff_str2_ffffff"
+            android:gravity="center"
+            android:text="@string/record"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
