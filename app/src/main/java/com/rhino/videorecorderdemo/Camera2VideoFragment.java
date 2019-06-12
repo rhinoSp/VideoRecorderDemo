@@ -309,52 +309,38 @@ public class Camera2VideoFragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     * In this sample, we choose a video size with 3x4 aspect ratio. Also, we don't use sizes
-     * larger than 1080p, since MediaRecorder cannot handle such a high-resolution video.
+     * Get match size
      *
-     * @param choices The list of available sizes
-     * @return The video size
+     * @param sizes The list of sizes that the camera supports for the intended output class
+     * @return Size
      */
-    private static Size chooseVideoSize(Size[] choices) {
-        for (Size size : choices) {
-            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
-                return size;
+    private Size getMatchingSize(Size[] sizes) {
+        Size selectSize = null;
+        float selectProportion = 0;
+        float viewProportion = (float) mTextureView.getWidth() / (float) mTextureView.getHeight();
+        for (int i = 0; i < sizes.length; i++) {
+            Size itemSize = sizes[i];
+            float itemSizeProportion = (float) itemSize.getHeight() / (float) itemSize.getWidth();
+            float differenceProportion = Math.abs(viewProportion - itemSizeProportion);
+            if (i == 0) {
+                selectSize = itemSize;
+                selectProportion = differenceProportion;
+                continue;
+            }
+            if (differenceProportion <= selectProportion) {
+                if (differenceProportion == selectProportion) {
+                    if (selectSize.getWidth() + selectSize.getHeight() < itemSize.getWidth() + itemSize.getHeight()) {
+                        selectSize = itemSize;
+                        selectProportion = differenceProportion;
+                    }
+
+                } else {
+                    selectSize = itemSize;
+                    selectProportion = differenceProportion;
+                }
             }
         }
-        Log.e(TAG, "Couldn't find any suitable video size");
-        return choices[choices.length - 1];
-    }
-
-    /**
-     * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
-     * width and height are at least as large as the respective requested values, and whose aspect
-     * ratio matches with the specified value.
-     *
-     * @param choices     The list of sizes that the camera supports for the intended output class
-     * @param width       The minimum desired width
-     * @param height      The minimum desired height
-     * @param aspectRatio The aspect ratio
-     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
-     */
-    private static Size chooseOptimalSize(Size[] choices, int width, int height, Size aspectRatio) {
-        // Collect the supported resolutions that are at least as big as the preview Surface
-        List<Size> bigEnough = new ArrayList<>();
-        int w = aspectRatio.getWidth();
-        int h = aspectRatio.getHeight();
-        for (Size option : choices) {
-            if (option.getHeight() == option.getWidth() * h / w &&
-                    option.getWidth() >= width && option.getHeight() >= height) {
-                bigEnough.add(option);
-            }
-        }
-
-        // Pick the smallest of those, assuming we found any
-        if (bigEnough.size() > 0) {
-            return Collections.min(bigEnough, new CompareSizesByArea());
-        } else {
-            Log.e(TAG, "Couldn't find any suitable preview size");
-            return choices[0];
-        }
+        return selectSize;
     }
 
     /**
@@ -408,9 +394,8 @@ public class Camera2VideoFragment extends Fragment implements View.OnClickListen
             if (map == null) {
                 throw new RuntimeException("Cannot get available preview/video sizes");
             }
-            mVideoSize = chooseVideoSize(map.getOutputSizes(MediaRecorder.class));
-            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                    width, height, mVideoSize);
+            mVideoSize = getMatchingSize(map.getOutputSizes(MediaRecorder.class));
+            mPreviewSize = mVideoSize;
 
             int orientation = getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -750,7 +735,7 @@ public class Camera2VideoFragment extends Fragment implements View.OnClickListen
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                mRecordSecond ++;
+                mRecordSecond++;
                 refreshRecordTime();
             }
         }, 1000, 1000);

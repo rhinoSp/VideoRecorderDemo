@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VideoRecorderDemo</string>
+    <string name="app_name">视频采集</string>
     <string name="record">录像</string>
     <string name="stop">停止</string>
     <string name="description_info">Info</string>
